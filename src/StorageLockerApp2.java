@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class StorageLockerAppWorking {
+public class StorageLockerApp2 {
 
     // Create integer variable total 10 lockers
     public static int totalAvailableLockers = 10;
@@ -100,22 +100,22 @@ public class StorageLockerAppWorking {
     }
 
     // displayChoices()
-    public static void displayChoices(String[] displayOptions, boolean[] available) {
+    public static void displayChoices() {
         int lockersBeingUsed = 0;
-        for (int i = 0; i < displayOptions.length; i++) {
-            if (!available[i]){
+        for (int i = 0; i < lockerID.length; i++) {
+            if (!lockerAvailable[i]){
                 lockersBeingUsed ++;
-                System.out.println(displayOptions[i]);
+                System.out.println(lockerID[i]);
             }
         }
         System.out.println("There are " + lockersBeingUsed + " lockers in use, including yours." );
     }
 
     // countOpenLockers
-    public static int countLockersOpen(String[] displayOptions, boolean[] available) {
+    public static int countLockersOpen() {
         int lockersOpen = 0;
-        for (int i = 0; i < displayOptions.length; i++) {
-            if (available[i]){
+        for (int i = 0; i < lockerID.length; i++) {
+            if (lockerAvailable[i]){
                 lockersOpen ++;
             }
         }
@@ -145,14 +145,14 @@ public class StorageLockerAppWorking {
 
     // accessLocker()
     public static void accessLocker(boolean release){
-        int lockers = countLockersOpen(lockerID,lockerAvailable);
+        int lockers = countLockersOpen();
         System.out.println(lockers);
         if (lockers < lockerID.length) {
 
-            displayChoices(lockerID, lockerAvailable);
+            displayChoices();
             String enteredLocker = getLockerNumber();
-            int lockerIndex = getLockerIndex(enteredLocker, lockerID);
-            boolean checkLocker = isLockerNumberValid(lockerID, enteredLocker);
+            int lockerIndex = getLockerIndex(enteredLocker);
+            boolean checkLocker = isLockerNumberValid(enteredLocker);
 
             if (checkLocker && release) {
                 releaseLocker(lockerIndex);
@@ -187,10 +187,10 @@ public class StorageLockerAppWorking {
     }
 
     // lockerIndex
-    public static int getLockerIndex(String lockerNumber, String[] lockers) {
+    public static int getLockerIndex(String lockerNumber) {
         int index = -1;
         // Iterate through the array to check if the target exists
-        for (String element : lockers) {
+        for (String element : lockerID) {
             index ++;
             if (element.equals(lockerNumber)) {
                 break;
@@ -200,7 +200,7 @@ public class StorageLockerAppWorking {
     }
 
     // isLockerNumberValid()
-    public static boolean isLockerNumberValid(String[] lockerID, String getLocker){
+    public static boolean isLockerNumberValid(String getLocker){
         boolean found = false;
 
         for (String element : lockerID) {
@@ -236,31 +236,26 @@ public class StorageLockerAppWorking {
 
     // openLocker()
     public static void openLocker(int lockerPinIndex) {
-        Scanner console = new Scanner(System.in);
         System.out.println("Enter PIN");
-        String PIN = console.nextLine();
-        if (Integer.parseInt(PIN) == Integer.parseInt(lockerPIN[lockerPinIndex])) {
-            System.out.println("Locker Opened");
-            closeLocker(lockerPinIndex);
-        }
-        else {
-            System.out.println("Wrong pin");
-        }
-
+        verifyPIN(lockerPinIndex, "Locker opened.");
     }
 
     // closeLocker()
     public static void closeLocker(int lockerPinIndex) {
-        Scanner console = new Scanner(System.in);
         System.out.println("Re-Enter PIN to close");
+        verifyPIN(lockerPinIndex, "Locker closed.");
+
+    }
+
+    public static void verifyPIN(int lockerPinIndex, String message){
+        Scanner console = new Scanner(System.in);
         String PIN = console.nextLine();
-        if (Integer.parseInt(PIN) == Integer.parseInt(lockerPIN[lockerPinIndex])) {
-            System.out.println("Locker Closed");
+        if (PIN.equals(lockerPIN[lockerPinIndex])) {
+            System.out.println(message);
         }
         else {
             System.out.println("Wrong pin");
         }
-
     }
 
 }
