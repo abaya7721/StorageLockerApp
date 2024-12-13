@@ -5,9 +5,10 @@ public class StorageLockerAppWorking {
     // Create integer variable total 10 lockers
     public static int totalAvailableLockers = 10;
 
+
     // Define global variables, data types
     public static String[] lockerID = {"A1", "A2", "A3"};
-    public static String[] lockerPIN = {"0001", "0002,", "0003"};
+    public static String[] lockerPIN = {"0001", "0002", "0003"};
     public static boolean[] lockerAvailable = {true, true, true};
 
     public static boolean appRunning = true;
@@ -22,9 +23,7 @@ public class StorageLockerAppWorking {
          2 Access a locker
          3 Release a locker
          4 Exit */
-
-
-     /*
+        /*
      2. User rents a locker
         - find first available locker
             - While looking through lockers if locker is full continue to next locker
@@ -88,6 +87,20 @@ public class StorageLockerAppWorking {
                 "--- \nAny other key to exit.");
     }
 
+    // getChoice()
+    public static int getChoice() {
+        Scanner console = new Scanner(System.in);
+        int choice=0;
+        try{
+            choice = Integer.parseInt(console.nextLine());
+        }
+        catch (Exception e ){
+            appRunning = false;
+        }
+        return choice;
+    }
+
+    // getAvailableLocker
     public static int getAnAvailableLocker() {
         int firstAvailableLocker = -1;
         for (int i = 0; i < lockerAvailable.length; i++) {
@@ -96,7 +109,6 @@ public class StorageLockerAppWorking {
             }
         }
         return firstAvailableLocker;
-
     }
 
     // displayChoices()
@@ -122,19 +134,6 @@ public class StorageLockerAppWorking {
         return lockersOpen;
     }
 
-    // getChoice()
-    public static int getChoice() {
-        Scanner console = new Scanner(System.in);
-        int choice=0;
-        try{
-            choice = Integer.parseInt(console.nextLine());
-        }
-        catch (Exception e ){
-            appRunning = false;
-        }
-        return choice;
-    }
-
     // rentLocker()
     public static void rentLocker() {
         int firstAvailableLocker = getAnAvailableLocker();
@@ -146,7 +145,8 @@ public class StorageLockerAppWorking {
     // accessLocker()
     public static void accessLocker(boolean release){
         int lockers = countLockersOpen();
-        System.out.println(lockers);
+        //System.out.println(lockers);
+
         if (lockers < lockerID.length) {
 
             displayChoices();
@@ -158,8 +158,9 @@ public class StorageLockerAppWorking {
                 releaseLocker(lockerIndex);
             } else if (checkLocker && !release) {
                 openLocker(lockerIndex);
+                closeLocker(lockerIndex);
             } else if (!checkLocker) {
-                System.out.println("Enter a valid locker number.");
+                System.out.println("Invalid locker number.");
             }
             //lockers = countLockersOpen(lockerID, lockerAvailable);
         }
@@ -195,6 +196,7 @@ public class StorageLockerAppWorking {
             if (element.equals(lockerNumber)) {
                 break;
             }
+
         }
         return index;
     }
@@ -215,23 +217,30 @@ public class StorageLockerAppWorking {
     // lockerReleaseConfirm
     public static void lockerReleaseConfirm(int lockerPinIndex) {
         Scanner console = new Scanner(System.in);
-        System.out.println("Enter PIN");
-        String PIN = console.nextLine();
 
-        if (Integer.parseInt(PIN) == Integer.parseInt(lockerPIN[lockerPinIndex])) {
-            System.out.println("Locker will be released. Are you sure? (y)");
+        int i = 0;
+        while (i < 3) {
+            System.out.println("Enter PIN");
+            String PIN = console.nextLine();
+            if (PIN.equals(lockerPIN[lockerPinIndex])) {
+                System.out.println("Locker will be released. Are you sure? (y)");
 
-            if("y".equals(console.nextLine())){
-                System.out.println("Locker released.");
-                lockerAvailable[lockerPinIndex] = true;
-                lockerPIN[lockerPinIndex] = null;
+                if ("y".equals(console.nextLine())) {
+                    System.out.println("Locker released.");
+                    lockerAvailable[lockerPinIndex] = true;
+                    //lockerPIN[lockerPinIndex] = null;
+                    break;
+                } else {
+                    System.out.println("Invalid entry. Not released");
+                    break;
+                }
+            } else {
+                System.out.println("Invalid PIN. \n Try Again.");
+                i++;
             }
-            else {
-                System.out.println("Invalid entry. Not released");;
-            }
+            if(i == 3 ) { System.out.println("Release unsuccessful. Exiting");}
         }
-        else {  System.out.println("Invalid PIN. Not released \n Exiting.");
-        }
+
     }
 
     // openLocker()
@@ -247,15 +256,16 @@ public class StorageLockerAppWorking {
 
     }
 
+    // verifyPIN
     public static void verifyPIN(int lockerPinIndex, String message){
         Scanner console = new Scanner(System.in);
         String PIN = console.nextLine();
-        if (PIN.equals(lockerPIN[lockerPinIndex])) {
-            System.out.println(message);
-        }
-        else {
-            System.out.println("Wrong pin");
-        }
+            if (PIN.equals(lockerPIN[lockerPinIndex])) {
+                System.out.println(message);
+            }
+            else {
+                System.out.println("Wrong pin");
+            }
     }
 
 }
