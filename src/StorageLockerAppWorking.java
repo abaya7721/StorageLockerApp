@@ -2,17 +2,15 @@ import java.util.Scanner;
 
 public class StorageLockerAppWorking {
 
-
-
     // Create integer variable total 10 lockers
     public static int totalAvailableLockers = 10;
 
     // Define global variables, data types
     public static String[] lockerID = {"A1", "A2", "A3"};
     public static String[] lockerPIN = {"0001", "0002,", "0003"};
-    public static boolean[] lockerAvailable = {true, true, false};
+    public static boolean[] lockerAvailable = {true, true, true};
 
-    public static boolean running = true;
+    public static boolean appRunning = true;
 
 
 
@@ -56,7 +54,7 @@ public class StorageLockerAppWorking {
 
      */
 
-        while (running) {
+        while (appRunning) {
             displayMainMenu();
             int menuChoice = getChoice();
             switch(menuChoice) {
@@ -64,10 +62,11 @@ public class StorageLockerAppWorking {
                     rentLocker();
                     break;
                 case 2:
-                    accessLocker();
+                    accessLocker(false);
                     break;
                 case 3:
-                    //releaseLocker();
+                    System.out.println("This will start the locker release.");
+                    accessLocker(true);
                     break;
                 default:
                     System.out.println("Exiting Application");
@@ -80,14 +79,6 @@ public class StorageLockerAppWorking {
     }
 
     /// Methods
-    // displayMainMenu()
-    /*
-       What would you like to do next?
-       If there is locker available. Print 1. Rent a locker.
-       2. Access a locker
-       3. Release a locker
-       --- Any other key to exit
-     */
     public static void displayMainMenu() {
         System.out.println("What would you like to do next?");
         if (getAnAvailableLocker() != -1) {
@@ -117,7 +108,18 @@ public class StorageLockerAppWorking {
                 System.out.println(displayOptions[i]);
             }
         }
-        System.out.println("Lockers in use. " + lockersBeingUsed);
+        System.out.println("There are " + lockersBeingUsed + " lockers in use, including yours." );
+    }
+
+    // countOpenLockers
+    public static int countLockersOpen(String[] displayOptions, boolean[] available) {
+        int lockersOpen = 0;
+        for (int i = 0; i < displayOptions.length; i++) {
+            if (available[i]){
+                lockersOpen ++;
+            }
+        }
+        return lockersOpen;
     }
 
     // getChoice()
@@ -128,8 +130,7 @@ public class StorageLockerAppWorking {
             choice = Integer.parseInt(console.nextLine());
         }
         catch (Exception e ){
-            choice = 0;
-            running = false;
+            appRunning = false;
         }
         return choice;
     }
@@ -143,24 +144,35 @@ public class StorageLockerAppWorking {
     }
 
     // accessLocker()
-    public static void accessLocker(){
-        displayChoices(lockerID,lockerAvailable);
-        String enteredLocker = getLockerNumber();
-        int lockerIndex = getLockerIndex(enteredLocker, lockerID);
-        boolean checkLocker = isLockerNumberValid(lockerID, enteredLocker);
+    public static void accessLocker(boolean release){
+        int lockers = countLockersOpen(lockerID,lockerAvailable);
+        System.out.println(lockers);
+        if (lockers < lockerID.length) {
 
-        if (checkLocker) {
-            System.out.println("Enter PIN");
-            openLocker(lockerIndex);
+            displayChoices(lockerID, lockerAvailable);
+            String enteredLocker = getLockerNumber();
+            int lockerIndex = getLockerIndex(enteredLocker, lockerID);
+            boolean checkLocker = isLockerNumberValid(lockerID, enteredLocker);
+
+            if (checkLocker && release) {
+                releaseLocker(lockerIndex);
+            } else if (checkLocker && !release) {
+                openLocker(lockerIndex);
+            } else if (!checkLocker) {
+                System.out.println("Enter a valid locker number.");
+            }
+            //lockers = countLockersOpen(lockerID, lockerAvailable);
         }
         else {
-            System.out.println("Enter a valid locker number.");
+            System.out.println("You need to rent a locker first.");
         }
-
-
     }
 
     // releaseLocker()
+    public static void releaseLocker(int index){
+        System.out.println("You are about to release a locker.");
+        lockerReleaseConfirm(index);
+    }
 
     // generatePin()
 
@@ -190,7 +202,6 @@ public class StorageLockerAppWorking {
     // isLockerNumberValid()
     public static boolean isLockerNumberValid(String[] lockerID, String getLocker){
         boolean found = false;
-        getLocker = getLocker;
 
         for (String element : lockerID) {
             if (element.equals(getLocker)) {
@@ -201,9 +212,32 @@ public class StorageLockerAppWorking {
         return found;
     }
 
+    // lockerReleaseConfirm
+    public static void lockerReleaseConfirm(int lockerPinIndex) {
+        Scanner console = new Scanner(System.in);
+        System.out.println("Enter PIN");
+        String PIN = console.nextLine();
+
+        if (Integer.parseInt(PIN) == Integer.parseInt(lockerPIN[lockerPinIndex])) {
+            System.out.println("Locker will be released. Are you sure? (y)");
+
+            if("y".equals(console.nextLine())){
+                System.out.println("Locker released.");
+                lockerAvailable[lockerPinIndex] = true;
+                lockerPIN[lockerPinIndex] = null;
+            }
+            else {
+                System.out.println("Invalid entry. Not released");;
+            }
+        }
+          else {  System.out.println("Invalid PIN. Not released \n Exiting.");
+    }
+    }
+
     // openLocker()
     public static void openLocker(int lockerPinIndex) {
         Scanner console = new Scanner(System.in);
+        System.out.println("Enter PIN");
         String PIN = console.nextLine();
         if (Integer.parseInt(PIN) == Integer.parseInt(lockerPIN[lockerPinIndex])) {
             System.out.println("Locker Opened");
