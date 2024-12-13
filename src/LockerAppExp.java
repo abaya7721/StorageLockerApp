@@ -1,7 +1,10 @@
 // import java.util.  Scanner, Random
 //
 
-public class StorageLockerApp2 {
+import java.util.Random;
+import java.util.Scanner;
+
+public class LockerAppExp {
 
     // Define global variables, data types
     public static String userLockerID;
@@ -11,8 +14,8 @@ public class StorageLockerApp2 {
     public static int totalAvailableLockers = 10;
 
     // boolean lockerAvailable[]
-    public static String[] lockerID = new String[totalAvailableLockers];
-    public static String[] lockerPIN = new String[totalAvailableLockers];
+    public static String[] lockerID = {"A1", "A2", "A3","A4","A5","A6","A7","A8","A9","A10"};
+    public static String[] lockerPIN = {"0000", "0000,","00000","00000","000","0000","0000","0000", "0000", "0000"};
     public static boolean[] lockerAvailable = new boolean[totalAvailableLockers];
 
 
@@ -20,32 +23,6 @@ public class StorageLockerApp2 {
 
 
     public static void main(String[] args) {
-
-        lockerID[0] = "A1";
-        lockerPIN[0] = "000000";
-        lockerAvailable[0] = false;
-        lockerID[1] = "A2";
-        lockerPIN[1] = "00000";
-        lockerAvailable[1] = true;
-        lockerID[2] = "A3";
-        lockerPIN[2] = "00000";
-        lockerAvailable[2] = false;
-        lockerID[3] = "A4";
-        lockerPIN[3] = "00000";
-        lockerAvailable[3] = true;
-        lockerID[4] = "A5";
-        lockerPIN[4] = "000000";
-        lockerAvailable[4] = false;
-        lockerID[5] = "A6";
-        lockerPIN[5] = "000000";
-        lockerAvailable[5] = true;
-        lockerID[6] = "A7";
-        lockerPIN[6] = "000000";
-        lockerAvailable[6] = false;
-        lockerID[7] = "A8";
-        lockerPIN[7] = "0000000";
-        lockerAvailable[7] = true;
-
         /*
     1. Display main menu.
      Main menu has 4 options
@@ -53,6 +30,7 @@ public class StorageLockerApp2 {
          2 Access a locker
          3 Release a locker
          4 Exit */
+
 
      /*
      2. User rents a locker
@@ -87,11 +65,12 @@ public class StorageLockerApp2 {
         displayMainMenu();
 
 
+
+
     }
 
 
     /// Methods
-
     // displayMainMenu()
     /*
        What would you like to do next?
@@ -102,7 +81,7 @@ public class StorageLockerApp2 {
      */
     public static void displayMainMenu(){
         System.out.println("What would you like to do next?");
-        if (totalAvailableLockers > 0) {
+        if (getAnAvailableLocker() != -1) {
             System.out.print("1. Rent a Locker");
         }
         System.out.println("\n2. Access a Locker \n3. Release a Locker \n" +
@@ -110,17 +89,37 @@ public class StorageLockerApp2 {
         }
 
     // displayChoices() return String
+    public static void displayChoices(String[] displayOptions) {
+        for (int i = 0; i < displayOptions.length; i++) {
+            System.out.println(i + 1 + ": " + displayOptions[i]);
+        }
+    }
 
     // getChoice()
+    public static int getChoice(){
+        Scanner console = new Scanner(System.in);
+        return getInt();
+    }
 
     // rentLocker()
+    public static void rentLocker(String lockerNumber, String pin){
+        System.out.println("Thank you.\n Your locker number is "+ lockerNumber +"\nYour locker pin is "+ pin);
+    }
+
 
     // accessLocker()
+    public static void accessLocker(){
+            boolean checkLocker = isLockerNumberValid(lockerID);
+            if (checkLocker) {
+
+            }
+
+
+        }
 
     // releaseLocker()
 
     // getAvailableLocker()
-
     public static void getAvailableLocker(){
         boolean isLockerAvailable = false;
         int i = 0;
@@ -134,20 +133,66 @@ public class StorageLockerApp2 {
         System.out.println();
     }
 
+    public static int getAnAvailableLocker(){
+        int firstAvailableLocker = -1;
+        for (int i = 0; i < lockerAvailable.length; i++){
+            if (lockerAvailable[i]){
+                return i;
+            }
+        }
+       return firstAvailableLocker;
+
+    }
+
     // generatePin()
+    public static String generatePin() {
+        Random random = new Random();
+        String randomPin = Integer.toString(random.nextInt(99));
+        return randomPin;
+    }
 
     // printReceipt()
 
     // isLockerNumberValid()
+    public static boolean isLockerNumberValid(String[] lockerID){
+    boolean found = false;
+    String getLocker = getLockerNumber();
+    // Iterate through the array to check if the target exists
+        for (String element : lockerID) {
+            if (element.equals(getLocker)) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
 
     // getLockerNumber()
+    public static String getLockerNumber(){
+        Scanner console = new Scanner(System.in);
+        System.out.println("Please enter a locker number.");
+        String enteredLocker = console.nextLine();
+        return enteredLocker;
+    }
 
     // openLocker()
 
     // getInt()
+    public static int getInt(){
+            Scanner console = new java.util.Scanner(System.in);
+            int i = 0;
+            while (i == 0){
+                try {
+                    i = Integer.parseInt(console.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Enter a valid number");
+                }
+            }
+            return i;
+        }
+    }
+
 
     // getString()
 
 
-
-}
