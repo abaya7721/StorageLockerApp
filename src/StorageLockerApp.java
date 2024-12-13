@@ -118,11 +118,14 @@ public class StorageLockerApp {
 
     // accessLocker()
 
+
     // releaseLocker()
 
     // generatePin()
 
     // printReceipt()
+
+    // getLockerNumber
 
     // isLockerNumberValid()
 

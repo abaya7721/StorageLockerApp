@@ -89,11 +89,13 @@ public class LockerAppExp {
         }
 
     // displayChoices() return String
-    public static void displayChoices(String[] displayOptions) {
+    public static void displayChoices(String[] displayOptions, boolean[] available) {
         for (int i = 0; i < displayOptions.length; i++) {
-            System.out.println(i + 1 + ": " + displayOptions[i]);
-        }
-    }
+            if (available[i]){
+                System.out.println(i + 1 + ": " + displayOptions[i]);
+            }
+            }
+     }
 
     // getChoice()
     public static int getChoice(){
@@ -109,9 +111,10 @@ public class LockerAppExp {
 
     // accessLocker()
     public static void accessLocker(){
-            boolean checkLocker = isLockerNumberValid(lockerID);
+        displayChoices(lockerID,lockerAvailable);
+        boolean checkLocker = isLockerNumberValid(lockerID);
             if (checkLocker) {
-
+                System.out.println("Enter PIN");
             }
 
 
